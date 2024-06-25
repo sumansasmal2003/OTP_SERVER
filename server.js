@@ -24,7 +24,7 @@ const otpMap = new Map();
 
 // Send OTP route
 app.post('/send-otp', async (req, res) => {
-    const { recipientEmail } = req.body;
+    const { recipientEmail, participantName, eventName, eventDate, eventTime } = req.body;
 
     try {
         // Generate OTP
@@ -38,7 +38,20 @@ app.post('/send-otp', async (req, res) => {
             from: process.env.EMAIL_USER,
             to: recipientEmail,
             subject: 'Your OTP for Participant Deletion',
-            text: `Your OTP is ${otp}. It will expire in 10 minutes.`,
+            html: `
+                <p>Dear ${participantName},</p>
+                <p>Your OTP for deleting your participation in the event <strong>${eventName}</strong> is:</p>
+                <h2 style="color: blue;">${otp}</h2>
+                <p><strong>Event Details:</strong></p>
+                <p>
+                    <strong>Name:</strong> ${participantName}<br>
+                    <strong>Event:</strong> ${eventName}<br>
+                    <strong>Date:</strong> ${eventDate}<br>
+                    <strong>Time:</strong> ${eventTime}
+                </p>
+                <p>This OTP will expire in 10 minutes.</p>
+                <p>Thank you.</p>
+            `,
         };
 
         await transporter.sendMail(mailOptions);
