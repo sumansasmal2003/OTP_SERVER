@@ -50,13 +50,15 @@ app.post('/send-otp', async (req, res) => {
 });
 
 // Verify OTP route
-// Verify OTP route
 app.post('/verify-otp', async (req, res) => {
     const { recipientEmail, enteredOTP } = req.body;
 
     try {
         // Retrieve stored OTP
         const storedOTP = otpMap.get(recipientEmail);
+
+        console.log(`Verifying OTP for ${recipientEmail}`);
+        console.log(`Stored OTP: ${storedOTP}, Entered OTP: ${enteredOTP}`);
 
         if (!storedOTP) {
             return res.status(400).json({ error: 'OTP not found or expired' });
@@ -76,7 +78,6 @@ app.post('/verify-otp', async (req, res) => {
         res.status(500).json({ error: 'Failed to verify OTP' });
     }
 });
-
 
 // Start server
 app.listen(port, () => {
